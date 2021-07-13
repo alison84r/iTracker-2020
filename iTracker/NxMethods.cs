@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NXOpen;
+﻿using NXOpen;
 using NXOpen.Features;
 using NXOpen.UF;
+using System;
+using System.Collections.Generic;
 
 namespace iTracker
 {
@@ -19,7 +16,7 @@ namespace iTracker
 
         private Nx()
         {
-            _theSession = NXOpen.Session.GetSession();
+            _theSession = Session.GetSession();
             _theUfSession = UFSession.GetUFSession();
         }
 
@@ -31,8 +28,18 @@ namespace iTracker
         /// <returns></returns>
         public string GetSystemOsName()
         {
-            _theUfSession.UF.AskSystemInfo(out var sysInfo);
-            return sysInfo.os_name;
+            try
+            {
+                _theUfSession.UF.AskSystemInfo(out var sysInfo);
+                return sysInfo.os_name;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in getting system Os Name",e);
+            }
+
+            return string.Empty;
+
         }
 
         /// <summary>
@@ -41,8 +48,16 @@ namespace iTracker
         /// <returns></returns>
         public string GetSystemOsVersion()
         {
-            _theUfSession.UF.AskSystemInfo(out var sysInfo);
-            return sysInfo.os_version;
+            try
+            {
+                _theUfSession.UF.AskSystemInfo(out var sysInfo);
+                return sysInfo.os_version;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in getting System OS version",e);
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -51,8 +66,17 @@ namespace iTracker
         /// <returns></returns>
         public string GetSystemMachineType()
         {
-            _theUfSession.UF.AskSystemInfo(out var sysInfo);
-            return sysInfo.machine_type;
+            try
+            {
+                _theUfSession.UF.AskSystemInfo(out var sysInfo);
+                return sysInfo.machine_type;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in getting System Machine Type",e);
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -61,8 +85,17 @@ namespace iTracker
         /// <returns></returns>
         public string GetSystemMemory()
         {
-            _theUfSession.UF.AskSystemInfo(out var sysInfo);
-            return sysInfo.physical_memory + " MB";
+            try
+            {
+                _theUfSession.UF.AskSystemInfo(out var sysInfo);
+                return sysInfo.physical_memory + " MB";
+            }
+            catch (Exception e)
+            {
+               Log.Error("Error in system memory",e);
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -71,6 +104,7 @@ namespace iTracker
         /// <returns></returns>
         public string GetLogFileOfCurrentSession()
         {
+
             LogFile theSessionLogFile = _theSession.LogFile;
             return theSessionLogFile.FileName;
         }
@@ -144,7 +178,7 @@ namespace iTracker
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error("Error in getting attribute value",e);
             }
             return attributeValue;
         }
@@ -190,7 +224,7 @@ namespace iTracker
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+               Log.Error("Error in getting attribute value",e);
             }
             return attributeValue;
         }
@@ -201,15 +235,23 @@ namespace iTracker
         /// <returns></returns>
         public string GetDisplayPartNumber()
         {
-            if (!CheckIfApplicationInModeling())
+            try
             {
-                return string.Empty;
+                if (!CheckIfApplicationInModeling())
+                {
+                    return string.Empty;
+                }
+                Part part = _theSession.Parts.Work;
+                if (part != null)
+                {
+                    return part.Name.ToUpper();
+                }
             }
-            Part part = _theSession.Parts.Work;
-            if (part != null)
+            catch (Exception e)
             {
-                return part.Name.ToUpper();
+              Log.Error("Error in getting display part number",e);
             }
+            
             return string.Empty;
         }
 
@@ -242,21 +284,28 @@ namespace iTracker
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error("Error in getting Timestamp of the feature",e);
             }
             return string.Empty;
         }
 
         private bool CheckIfApplicationInModeling()
         {
-            string theSessionApplicationName = _theSession.ApplicationName;
-            if (theSessionApplicationName == "UG_APP_MODELING")
+            try
             {
-                return true;
+                string theSessionApplicationName = _theSession.ApplicationName;
+                if (theSessionApplicationName == "UG_APP_MODELING")
+                {
+                    return true;
+                }
             }
+            catch (Exception e)
+            {
+                Log.Error("Error whle checking modeling workbench",e);
+                return false;
+            }
+           
             return true;
         }
-
-
     }
 }
