@@ -70,8 +70,8 @@ namespace iTracker
         //Will also work if dll is at folder named "startup" under any folder listed in the 
         //text file pointed to by the environment variable UGII_CUSTOM_DIRECTORY_FILE.
         //------------------------------------------------------------------------------
-        //public static int Main() //Do Not Delete this line
-        public static int Startup()
+        public static int Main() //Do Not Delete this line
+        //public static int Startup()
         {
             int retValue = 0;
             //Initialize Log File Settings
@@ -137,8 +137,8 @@ namespace iTracker
 
         public static int GetUnloadOption(string arg)
         {
-            //return Nx.NxSession.UnloadExplicitly();
-            return Nx.NxSession.UnloadAtTermination();
+            return Nx.NxSession.UnloadExplicitly();
+            //return Nx.NxSession.UnloadAtTermination();
         }
 
         #region Initial Settings

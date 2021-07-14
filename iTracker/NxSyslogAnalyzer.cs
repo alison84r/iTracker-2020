@@ -223,8 +223,17 @@ namespace iTracker
                                     {
                                         _fullBlockStrings.AddRange(_tempStorageOfLines);
                                         int count = _fullBlockStrings.Count - 1;
+                                        string timeStampOfFeature = string.Empty;
+                                        try
+                                        {
+                                            timeStampOfFeature = Nx.NxSession.GetTimeStampOfFeature();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Log.Error("Error in getting timestamp of feature",e);
+                                        }
                                         //Add time Stamp at Dlgbegin
-                                        string timeStampOfFeature = Nx.NxSession.GetTimeStampOfFeature();
+                                      
 
                                         _fullBlockStrings[count] =
                                             _fullBlockStrings[count] + "   [" + timeStampOfFeature + "]";
@@ -287,7 +296,7 @@ namespace iTracker
         {
 
             //Testing: Comment at release 
-            //System.IO.File.WriteAllLines(@"C:\Users\username\Desktop\log\collectedCommand.txt", FullBlockStrings);
+            //System.IO.File.WriteAllLines(@"C:\Users\username\Desktop\log\collectedCommand.txt", _fullBlockStrings);
 
             bool isOkCbClk = false;
             bool isApplyCbClk = false;

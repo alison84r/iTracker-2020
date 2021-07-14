@@ -3,6 +3,7 @@ using NXOpen.Features;
 using NXOpen.UF;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iTracker
 {
@@ -274,7 +275,7 @@ namespace iTracker
                     Feature[] features = part.Features.ToArray();
                     if (features.Length > 0)
                     {
-                        Feature currentFeature = part.CurrentFeature;
+                        Feature currentFeature = features.LastOrDefault();
                         if (currentFeature != null)
                         {
                             return currentFeature.Timestamp.ToString();
